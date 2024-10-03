@@ -128,8 +128,8 @@ namespace MvVox
                 default:
                     return true;
             }
-        } 
-        private Vector3Int? GetHoveredGridPosition(Ray ray)
+        }
+        public Vector3Int? GetHoveredGridPosition(Ray ray)
         {
             Vector3Int? voxelHit = CheckVoxelIntersection(ray).position;
             if (voxelHit.HasValue)

@@ -65,22 +65,12 @@ namespace MvVox
             vox.color = _target.DrawColor;
             EditorUtility.SetDirty(_target);
         }
-        public void AddVoxel(Vector3Int position)
-        {
-            VoxData existingVoxel = _target.Voxels.Find(v => v.NetPosition == position);
-            AddVoxel(existingVoxel);
-        }
 
         public void RemoveVoxel(VoxData vox)
         {
             Undo.RecordObject(_target, "Remove Voxel");
             vox.IsFilled = false;
             EditorUtility.SetDirty(_target);
-        }
-        public void RemoveVoxel(Vector3Int position)
-        {
-            VoxData existingVoxel = _target.Voxels.Find(v => v.NetPosition == position);
-            RemoveVoxel(existingVoxel);
         }
 
         internal VoxData GetVoxelFromNetPosition(Vector3Int nullable)

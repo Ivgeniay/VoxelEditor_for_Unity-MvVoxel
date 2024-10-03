@@ -46,6 +46,12 @@ namespace MvVox
 
             var voxelSizeField = new FloatField("Voxel Size");
             voxelSizeField.BindProperty(serializedObject.FindProperty("VoxelSize")); 
+            voxelSizeField.RegisterValueChangedCallback((evt) =>
+            {
+                Undo.RecordObject(voxCreater, "Voxel Size Changed");
+                voxCreater.VoxelSizeChangedHandler();
+                EditorUtility.SetDirty(voxCreater);
+            });
             root.Add(voxelSizeField);
 
             var netSizeField = new Vector3IntField("Net Size");
@@ -60,6 +66,11 @@ namespace MvVox
 
             var netOffsetField = new Vector3Field("Net Offset");
             netOffsetField.BindProperty(serializedObject.FindProperty("netOffset"));
+            netOffsetField.RegisterValueChangedCallback((evt) =>
+            {
+                Undo.RecordObject(voxCreater, "Net Offset Changed");
+                EditorUtility.SetDirty(voxCreater);
+            });
             root.Add(netOffsetField);
 
             var brushColorField = new ColorField("Brush Color");
@@ -191,6 +202,7 @@ namespace MvVox
         {
             _editroBrushModeHandler.OnBrushModeChanged += _raycastManager.OnBrushModeChanged;
             _editroBrushModeHandler.OnBrushModeChanged += _interactionHandler.OnBrushModeChanged;
+            _editroBrushModeHandler.OnBrushModeChanged += _inputManager.OnBrushModeChanged;
 
             _cameraObserver.OnCameraChanged += _netDrawer.UpdateCameraData;
             _cameraObserver.OnCameraChanged += _raycastManager.UpdateVisiblePlanes;
@@ -215,9 +227,9 @@ namespace MvVox
                 _inputManager.Update(Event.current);
                 _cameraObserver.Observe();
                 _netDrawer.DrawInsideCubeFaces();
-                _voxelDrawer.DrawVoxels(_target.VoxelSize);
-                _projectionManager.DrawOutlined();
-                _raycastManager.HandleInteraction(_inputManager.MousePosition); 
+                _voxelDrawer.DrawVoxels(_target.VoxelSize); 
+                _raycastManager.HandleInteraction(_inputManager.MousePosition);
+                //VisualizetionRaycast();
             }
         }
 
@@ -228,6 +240,22 @@ namespace MvVox
             Vector3 cubeSize = new Vector3(_target.NetSize.x, _target.NetSize.y, _target.NetSize.z) * _target.VoxelSize;
             Handles.DrawWireCube(_target.NetPosition + cubeSize * 0.5f, cubeSize);
         } 
+
+        private void VisualizetionRaycast()
+        {
+            Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+            Vector3Int? hoveredPosition = _raycastManager.GetHoveredGridPosition(ray);
+            if (hoveredPosition.HasValue)
+            {
+                Handles.color = Color.red;
+                Vector3 worldPos = _target.NetPosition + new Vector3(
+                    hoveredPosition.Value.x * _target.VoxelSize,
+                    hoveredPosition.Value.y * _target.VoxelSize,
+                    hoveredPosition.Value.z * _target.VoxelSize
+                );
+                Handles.DrawWireCube(worldPos + Vector3.one * _target.VoxelSize * 0.5f, Vector3.one * _target.VoxelSize);
+            }
+        }
         #endregion
     }
 }

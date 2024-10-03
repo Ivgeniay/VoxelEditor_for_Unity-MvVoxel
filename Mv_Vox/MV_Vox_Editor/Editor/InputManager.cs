@@ -11,6 +11,8 @@ namespace MvVox
         public event Action<Vector2> OnMouse1Down;
         public event Action<Vector2> OnMousePositionChanged;
 
+        private BrushMode currentBrushMode;
+
         public Vector2 MousePosition { get => _lastMousePosition; } 
         private Vector2 _lastMousePosition;
         private Event lastEvent;
@@ -22,6 +24,7 @@ namespace MvVox
 
         public void Update(Event currentEvent)
         {
+            if (currentBrushMode == BrushMode.None) return;
             this.lastEvent = currentEvent;
             if (currentEvent == null) return;
 
@@ -49,6 +52,9 @@ namespace MvVox
         }
 
         public void Use() =>
-            lastEvent?.Use(); 
+            lastEvent?.Use();
+
+        public void OnBrushModeChanged(BrushMode newBrushMode) =>
+            currentBrushMode = newBrushMode;
     }
 }

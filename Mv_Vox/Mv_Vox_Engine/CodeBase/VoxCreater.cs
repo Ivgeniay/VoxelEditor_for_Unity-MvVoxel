@@ -108,6 +108,17 @@ namespace MvVox
             }
         }
 
+        public void VoxelSizeChangedHandler()
+        {
+            foreach (var voxel in Voxels)
+            {
+                voxel.Position = NetPosition + new Vector3(
+                    voxel.NetPosition.x * VoxelSize,
+                    voxel.NetPosition.y * VoxelSize, 
+                    voxel.NetPosition.z * VoxelSize);
+            } 
+        }
+
         [SerializeField]
         public class NetBound
         {
@@ -146,7 +157,6 @@ namespace MvVox
             [SerializeField] private Vector3 position;
             [SerializeField] public Color color = Color.white;
             [SerializeField] public bool IsFilled;
-            [SerializeField] public bool IsOutlined;
             [SerializeField]
             public Vector3 Center { get => Position + Vector3.one * _target.VoxelSize * 0.5f; }
             [SerializeField] private Vector3 center;
@@ -170,7 +180,6 @@ namespace MvVox
                 Position = source.Position;
                 color = source.color;
                 IsFilled = source.IsFilled;
-                IsOutlined = source.IsOutlined;
             }
         }
     } 

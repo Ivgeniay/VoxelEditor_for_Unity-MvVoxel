@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using UnityEditor;
-using UnityEngine;
-using static MvVox.VoxCreater;
+﻿using UnityEngine;
 
 namespace MvVox
 {
@@ -37,19 +34,6 @@ namespace MvVox
         public void Draw(VoxelBound bound)
         {
             _projection.Draw(bound.Center, Vector3.one * bound.Size);
-        }
-
-        public void Draw(Vector3 worldPosition)
-        {
-            _projection.Draw(worldPosition + Vector3.one * _target.VoxelSize * 0.5f, Vector3.one * _target.VoxelSize);
-        }
-
-        public void DrawOutlined()
-        {
-            foreach (VoxData item in _target.Voxels.Where(e => e.IsOutlined))
-            {
-                Draw(item.NetPosition);
-            }
         }
     }
 }
