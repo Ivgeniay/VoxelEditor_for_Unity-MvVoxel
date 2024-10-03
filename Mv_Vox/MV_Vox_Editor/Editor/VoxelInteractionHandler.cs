@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
 using static MvVox.VoxCreater;
 
 namespace MvVox
@@ -37,7 +38,9 @@ namespace MvVox
                 } 
                 else if (currentBrushMode == BrushMode.Pippette)
                 {
+                    Undo.RecordObject(_target, "Brush color changed");
                     _target.DrawColor = currentVoxel.color;
+                    EditorUtility.SetDirty(_target);
                 }
             } 
         }

@@ -50,29 +50,33 @@ namespace MvVox
         }
 
         private void UpdateVisibility(Vector3 cameraPosition)
-        { 
+        {
             Vector3 localCameraPos = cameraPosition - _target.NetPosition;
             Vector3 cubeSize = new Vector3(_target.NetSize.x, _target.NetSize.y, _target.NetSize.z) * _target.VoxelSize;
+             
+            cameraData.VisibleSides = VisibleSide.None;
+             
+            if (localCameraPos.z > 0)
+                cameraData.VisibleSides |= VisibleSide.IsFront;
+             
+            if (localCameraPos.z < cubeSize.z)
+                cameraData.VisibleSides |= VisibleSide.IsBack;
+             
+            if (localCameraPos.x > 0)
+                cameraData.VisibleSides |= VisibleSide.IsLeft;
+             
+            if (localCameraPos.x < cubeSize.x)
+                cameraData.VisibleSides |= VisibleSide.IsRight;
+             
+            if (localCameraPos.y < cubeSize.y)
+                cameraData.VisibleSides |= VisibleSide.IsTop;
+             
+            if (localCameraPos.y > 0)
+                cameraData.VisibleSides |= VisibleSide.IsBottom;
 
-            if (localCameraPos.z > 0) cameraData.VisibleSides |= VisibleSide.IsFront;
-            else cameraData.VisibleSides &= ~VisibleSide.IsFront;
-
-            if (localCameraPos.z < cubeSize.z) cameraData.VisibleSides |= VisibleSide.IsBack;
-            else cameraData.VisibleSides &= ~VisibleSide.IsBack;
-
-            if (localCameraPos.x > 0) cameraData.VisibleSides |= VisibleSide.IsLeft;
-            else cameraData.VisibleSides &= ~VisibleSide.IsLeft;
-
-            if (localCameraPos.x < cubeSize.x) cameraData.VisibleSides |= VisibleSide.IsRight;
-            else cameraData.VisibleSides &= ~VisibleSide.IsRight;
-
-            if (localCameraPos.y < cubeSize.y) cameraData.VisibleSides |= VisibleSide.IsTop;
-            else cameraData.VisibleSides &= ~VisibleSide.IsTop;
-
-            if (localCameraPos.y > 0) cameraData.VisibleSides |= VisibleSide.IsBottom;
-            else cameraData.VisibleSides &= ~VisibleSide.IsBottom;  
+            //Debug.Log($"Camera position: {localCameraPos}, Cube size: {cubeSize}, Visible sides: {cameraData.VisibleSides}");
         }
     }
 
-    
+
 }

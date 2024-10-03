@@ -138,10 +138,22 @@ namespace MvVox
             brushToolsContainer.style.justifyContent = Justify.SpaceBetween;
             brushToolsContainer.style.marginTop = 5;
 
-            var noneButton = new Button(() => SetBrushMode(BrushMode.None, brushTypeLabel)) { text = "None" };
-            var paintButton = new Button(() => SetBrushMode(BrushMode.Paint, brushTypeLabel)) { text = "Paint" };
-            var eraseButton = new Button(() => SetBrushMode(BrushMode.Erase, brushTypeLabel)) { text = "Erase" };
-            var pipetteButton = new Button(() => SetBrushMode(BrushMode.Pippette, brushTypeLabel)) { text = "Pipette" };
+            var noneButton = new Button(() =>
+            {
+                SetBrushMode(BrushMode.None, brushTypeLabel);
+            }) { text = "None" };
+            var paintButton = new Button(() =>
+            {
+                SetBrushMode(BrushMode.Paint, brushTypeLabel);
+            }) { text = "Paint" }; 
+            var eraseButton = new Button(() =>
+            {
+                SetBrushMode(BrushMode.Erase, brushTypeLabel);
+            }) { text = "Erase" };
+            var pipetteButton = new Button(() =>
+            {
+                SetBrushMode(BrushMode.Pippette, brushTypeLabel);
+            }) { text = "Pipette" };
 
             noneButton.style.flexGrow = 1;
             paintButton.style.flexGrow = 1;
@@ -174,6 +186,8 @@ namespace MvVox
         private void SetBrushMode(BrushMode mode, Label brushTypeLabel = null)
         {
             var voxCreater = (VoxCreater)target;
+            Undo.RecordObject(voxCreater, $"Set brush mode {mode}");
+
             var property = serializedObject.FindProperty("CurrentBrushMode");
             property.enumValueIndex = (int)mode;
             _editroBrushModeHandler?.SetBrushMode(mode);
@@ -181,6 +195,7 @@ namespace MvVox
                 brushTypeLabel.text = $"Brush Type: {mode}";
 
             serializedObject.ApplyModifiedProperties();
+            EditorUtility.SetDirty(voxCreater);
         }
 
         private void OnEnable()
@@ -229,7 +244,6 @@ namespace MvVox
                 _netDrawer.DrawInsideCubeFaces();
                 _voxelDrawer.DrawVoxels(_target.VoxelSize); 
                 _raycastManager.HandleInteraction(_inputManager.MousePosition);
-                //VisualizetionRaycast();
             }
         }
 

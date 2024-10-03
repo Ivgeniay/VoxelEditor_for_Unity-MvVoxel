@@ -30,7 +30,7 @@ namespace MvVox
             if (currentBrushMode == BrushMode.Paint)
             {
                 if (voxelHit.HasValue)
-                {
+                { 
                     Vector3Int placementPosition = GetPlacementPosition(voxelHit.Value, ray);
                     if (IsInsideWorkArea(placementPosition))
                     {
@@ -236,11 +236,13 @@ namespace MvVox
                     VisibleSide = VisibleSide.IsFront,
                 };
             if (_cameraData.VisibleSides.HasFlag(VisibleSide.IsBack))
+            {
                 yield return new PlaneModel
                 {
-                    Plane = new Plane(Vector3.forward, _target.NetPosition + Vector3.forward * cubeSize.z),
+                    Plane = new Plane(Vector3.back, _target.NetPosition + Vector3.forward * cubeSize.z),
                     VisibleSide = VisibleSide.IsBack,
                 };
+            }
             if (_cameraData.VisibleSides.HasFlag(VisibleSide.IsLeft))
                 yield return new PlaneModel
                 {
