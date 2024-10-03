@@ -42,13 +42,28 @@ namespace MvVox
 
             var nameField = new TextField("Name of Object");
             nameField.BindProperty(serializedObject.FindProperty("Name"));
+            nameField.RegisterValueChangedCallback((evt) =>
+            {
+                if (string.IsNullOrWhiteSpace(evt.newValue))
+                {
+                    nameField.SetValueWithoutNotify(evt.previousValue);
+                }
+            });
             root.Add(nameField);
 
             var voxelSizeField = new FloatField("Voxel Size");
             voxelSizeField.BindProperty(serializedObject.FindProperty("VoxelSize")); 
             voxelSizeField.RegisterValueChangedCallback((evt) =>
             {
+                if (evt.newValue <= 0)
+                {
+                    voxelSizeField.SetValueWithoutNotify(evt.previousValue);
+                    Debug.LogWarning("Voxel Size cannot be less than or equal to 0.");
+                    return;
+                }
+
                 Undo.RecordObject(voxCreater, "Voxel Size Changed");
+                voxCreater.VoxelSize = evt.newValue;
                 voxCreater.VoxelSizeChangedHandler();
                 EditorUtility.SetDirty(voxCreater);
             });
@@ -58,6 +73,12 @@ namespace MvVox
             netSizeField.BindProperty(serializedObject.FindProperty("_netSize"));
             netSizeField.RegisterValueChangedCallback((evt) =>
             {
+                Vector3Int newValue = evt.newValue;
+                if (newValue.x <= 0|| newValue.y <= 0 || newValue.z <= 0)
+                {
+                    netSizeField.SetValueWithoutNotify(evt.previousValue);
+                    return;
+                }
                 Undo.RecordObject(voxCreater, "Resize");
                 voxCreater.Resize();
                 EditorUtility.SetDirty(voxCreater);

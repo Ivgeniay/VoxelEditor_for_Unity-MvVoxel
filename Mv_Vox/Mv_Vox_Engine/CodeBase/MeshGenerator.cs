@@ -3,7 +3,6 @@ using static MvVox.VoxCreater;
 using System.Linq; 
 using UnityEngine;
 using System;
-using static UnityEngine.GraphicsBuffer;
 
 namespace MvVox
 {
@@ -28,8 +27,7 @@ namespace MvVox
             List<Cube> cubes = new List<Cube>();
 
             _target.Voxels.RemoveAll(v => !v.IsFilled);
-
-            foreach (VoxData voxel in _target.Voxels.Where(v => v.IsFilled))
+            foreach (VoxData voxel in _target.Voxels)
             {
                 VisibleSide visibleSides = VisibleSide.All;
 
@@ -42,7 +40,7 @@ namespace MvVox
 
                 if (visibleSides != VisibleSide.None)
                 {
-                    cubes.Add(new Cube(voxel.Position, visibleSides, voxel.color, _voxelSize));
+                    cubes.Add(new Cube(voxel.Center, visibleSides, voxel.color, _voxelSize));
                 }
             }
 
@@ -151,8 +149,7 @@ namespace MvVox
 
             for (int i = 0; i < 4; i++)
                 colors.Add(Color);
-
-            // Добавляем UV-координаты
+             
             uvs.Add(new Vector2(0, 0));
             uvs.Add(new Vector2(1, 0));
             uvs.Add(new Vector2(1, 1));
