@@ -10,6 +10,7 @@ namespace MvVox
         private VoxelStorage _voxelStorage; 
 
         private VoxData currentVoxel;
+        private Vector3Int netPosition;
         private BrushMode currentBrushMode;
 
         internal VoxelInteractionHandler(VoxCreater target, VoxelStorage voxelStorage)
@@ -21,20 +22,32 @@ namespace MvVox
         public void HandleHoweredVoxel(Vector3Int? nullable)
         {
             if (nullable.HasValue)
+            {
                 currentVoxel = _voxelStorage.GetVoxelFromNetPosition(nullable.Value);
+                netPosition = nullable.Value; 
+            }
+        }
+        private bool IsValidNetPosition(Vector3Int netPos)
+        {
+            return  netPos.x <= _target.NetSize.x &&
+                    netPos.y <= _target.NetSize.y &&
+                    netPos.z <= _target.NetSize.z &&
+                    netPos.x >= 0 &&
+                    netPos.y >= 0 &&
+                    netPos.z >= 0;
         }
 
         public void HandleMouseDown(Vector2 vector)
-        {
-            if (currentVoxel != null)
+        { 
+            if (IsValidNetPosition(netPosition))
             {
                 if (currentBrushMode == BrushMode.Paint)
                 {
-                    _voxelStorage.AddVoxel(currentVoxel);
+                    _voxelStorage.AddVoxel(netPosition);
                 }
                 else if (currentBrushMode == BrushMode.Erase)
                 {
-                    _voxelStorage.RemoveVoxel(currentVoxel);
+                    _voxelStorage.RemoveVoxel(netPosition);
                 } 
                 else if (currentBrushMode == BrushMode.Pippette)
                 {

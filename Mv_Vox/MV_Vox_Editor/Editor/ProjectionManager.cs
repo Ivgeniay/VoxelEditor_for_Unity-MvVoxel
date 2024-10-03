@@ -31,7 +31,7 @@ namespace MvVox
             Draw(bound);
         }
 
-        public void Draw(VoxelBound bound)
+        private void Draw(VoxelBound bound)
         {
             _projection.Draw(bound.Center, Vector3.one * bound.Size);
         }

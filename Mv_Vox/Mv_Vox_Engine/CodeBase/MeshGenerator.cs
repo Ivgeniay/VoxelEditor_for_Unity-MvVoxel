@@ -27,6 +27,8 @@ namespace MvVox
         {
             List<Cube> cubes = new List<Cube>();
 
+            _target.Voxels.RemoveAll(v => !v.IsFilled);
+
             foreach (VoxData voxel in _target.Voxels.Where(v => v.IsFilled))
             {
                 VisibleSide visibleSides = VisibleSide.All;

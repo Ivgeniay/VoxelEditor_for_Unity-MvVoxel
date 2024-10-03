@@ -2,7 +2,6 @@
 using UnityEditor;
 using UnityEngine; 
 using System;
-using System.Linq;
 using static MvVox.VoxCreater;
 
 namespace MvVox

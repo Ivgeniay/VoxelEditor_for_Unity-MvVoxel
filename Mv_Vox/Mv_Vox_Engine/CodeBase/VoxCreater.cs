@@ -70,21 +70,6 @@ namespace MvVox
         public void Clear()
         {
             Voxels = new List<VoxData>(NetSize.x * NetSize.y * NetSize.z);
-            for (int x = 0; x < NetSize.x; x++)
-            {
-                for (int y = 0; y < NetSize.y; y++)
-                {
-                    for (int z = 0; z < NetSize.z; z++)
-                    {
-                        var worldPosition = NetPosition + new Vector3(x * VoxelSize, y * VoxelSize, z * VoxelSize);
-                        Voxels.Add(new VoxData(this)
-                        {
-                            NetPosition = new Vector3Int(x, y, z),
-                            Position = worldPosition,
-                        });
-                    }
-                }
-            }
         } 
 
         public void Resize()
@@ -98,13 +83,13 @@ namespace MvVox
                 {
                     tempList.Add(voxel);
                 }
-            }
-
+            } 
             Clear();
-            foreach(VoxData newVoxel in Voxels)
-            { 
-                VoxData oldVoxData = tempList.FirstOrDefault(e => e.NetPosition == newVoxel.NetPosition);
-                if (oldVoxData != null) newVoxel.CloneFrom(oldVoxData);
+            foreach(VoxData oldVoxel in tempList)
+            {
+                VoxData newVox = new(this);
+                newVox.CloneFrom(oldVoxel);
+                Voxels.Add(newVox);
             }
         }
 
